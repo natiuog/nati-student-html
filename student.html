@@ -1,0 +1,638 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeWithStudents - Learn Programming</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(90deg, #4F46E5 0%, #EC4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4F46E5',
+                        secondary: '#EC4899',
+                        accent: '#10B981',
+                    },
+                    animation: {
+                        'spin-slow': 'spin 3s linear infinite',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-purple-900 dark:to-slate-800 text-slate-800 dark:text-slate-100 transition-colors duration-200">
+    <div id="app"></div>
+
+    <script>
+        // Default state without admin features
+        const DEFAULT_STATE = {
+            title: "CodeWithStudents",
+            tagline: "Learn Programming Through Social Media",
+            githubRepo: "https://github.com/teachcode/curriculum",
+            nextVideoPlan: {
+                title: "HTML & CSS Crash Course",
+                notes: "In this comprehensive lesson, we'll dive into the fundamentals of web development. You'll learn how to create basic HTML structure, apply CSS styling, and implement responsive design principles. Perfect for absolute beginners who want to build their first website!",
+                platform: "YouTube",
+                difficulty: "Beginner",
+                duration: "25:45",
+                scheduledDate: "2024-01-29"
+            },
+            lessons: [
+                {
+                    id: 1,
+                    title: "Introduction to Python",
+                    description: "Variables, data types, and basic syntax in Python.",
+                    platform: "YouTube",
+                    videoUrl: "https://youtube.com/lesson1",
+                    published: true,
+                    difficulty: "Beginner",
+                    duration: "15:30"
+                },
+                {
+                    id: 2,
+                    title: "JavaScript Variables & Data Types",
+                    description: "Understanding var, let, const and primitive types.",
+                    platform: "TikTok",
+                    videoUrl: "https://tiktok.com/lesson2",
+                    published: true,
+                    difficulty: "Beginner",
+                    duration: "8:45"
+                },
+                {
+                    id: 3,
+                    title: "React Components Deep Dive",
+                    description: "Props, state, and component lifecycle in React.",
+                    platform: "Instagram",
+                    videoUrl: "https://instagram.com/lesson3",
+                    published: true,
+                    difficulty: "Intermediate",
+                    duration: "22:10"
+                },
+                {
+                    id: 4,
+                    title: "Python Functions & Loops",
+                    description: "Writing functions, for/while loops, and control flow.",
+                    platform: "YouTube",
+                    videoUrl: "https://youtube.com/lesson4",
+                    published: true,
+                    difficulty: "Beginner",
+                    duration: "18:20"
+                }
+            ],
+            roadmap: [
+                { week: "Week 1", topic: "Programming Fundamentals", status: "completed" },
+                { week: "Week 2", topic: "Variables & Data Types", status: "completed" },
+                { week: "Week 3", topic: "Control Flow & Loops", status: "completed" },
+                { week: "Week 4", topic: "Functions & Modules", status: "current" },
+                { week: "Week 5", topic: "Object-Oriented Programming", status: "upcoming" },
+                { week: "Week 6", topic: "Web Development Basics", status: "upcoming" }
+            ]
+        };
+
+        // App state
+        let state = {
+            data: DEFAULT_STATE,
+            activeTab: 'home',
+            currentTime: new Date()
+        };
+
+        // Update functions
+        function setActiveTab(tab) {
+            state.activeTab = tab;
+            render();
+        }
+
+        // Render functions
+        function render() {
+            // Update current time
+            state.currentTime = new Date();
+            
+            const app = document.getElementById('app');
+            app.innerHTML = `
+                ${renderHeader()}
+                <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    ${renderContent()}
+                </main>
+                ${renderFooter()}
+            `;
+
+            // Start time update interval
+            if (!document.getElementById('timeInterval')) {
+                const timeInterval = document.createElement('div');
+                timeInterval.id = 'timeInterval';
+                document.body.appendChild(timeInterval);
+                setInterval(render, 1000);
+            }
+
+            // Add event listeners
+            addEventListeners();
+        }
+
+        function renderHeader() {
+            return `
+                <header class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-lg shadow-lg sticky top-0 z-50 border-b border-slate-200 dark:border-slate-700">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div class="flex justify-between items-center py-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg floating">
+                                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h1 class="text-2xl font-bold gradient-text">
+                                        ${state.data.title}
+                                    </h1>
+                                    <p class="text-sm text-slate-600 dark:text-slate-400">${state.data.tagline}</p>
+                                </div>
+                            </div>
+                            <div class="text-sm text-slate-500 dark:text-slate-400 font-mono">
+                                <div class="flex items-center space-x-2">
+                                    <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <span>${state.currentTime.toLocaleTimeString()}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <nav class="flex space-x-8 border-t dark:border-slate-700 pt-2">
+                            ${['home', 'lessons', 'roadmap', 'next'].map(tab => {
+                                const labels = { home: 'Home', lessons: 'Lessons', roadmap: 'Roadmap', next: 'Next Video' };
+                                const icons = { home: '🏠', lessons: '📚', roadmap: '🎯', next: '▶️' };
+                                return `
+                                    <button onclick="setActiveTab('${tab}')" class="py-3 px-1 border-b-2 font-medium text-sm transition-all duration-200 ${state.activeTab === tab ? 'border-indigo-500 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400' : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300 hover:border-slate-300'}">
+                                        <span class="mr-2">${icons[tab]}</span>
+                                        ${labels[tab]}
+                                    </button>
+                                `;
+                            }).join('')}
+                        </nav>
+                    </div>
+                </header>
+            `;
+        }
+
+        function renderContent() {
+            switch (state.activeTab) {
+                case 'home':
+                    return renderHome();
+                case 'lessons':
+                    return renderLessons();
+                case 'roadmap':
+                    return renderRoadmap();
+                case 'next':
+                    return renderNextVideo();
+                default:
+                    return renderHome();
+            }
+        }
+
+        function renderHome() {
+            return `
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl md:text-5xl font-bold mb-6 gradient-text">
+                        Master Programming Through Bite-Sized Lessons
+                    </h2>
+                    <p class="text-xl text-slate-600 dark:text-slate-300 mb-8 max-w-4xl mx-auto leading-relaxed">
+                        Join thousands of students learning to code through engaging social media content. 
+                        Watch tutorials on YouTube, TikTok, and Instagram, then practice with our GitHub repositories.
+                    </p>
+                    
+                    <div class="grid gap-6 md:grid-cols-3 mb-12">
+                        <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl shadow-xl p-8 card-hover border border-slate-200 dark:border-slate-700">
+                            <div class="text-4xl mb-4 text-center">📱</div>
+                            <h3 class="text-xl font-semibold mb-3 text-indigo-600 dark:text-indigo-400">Micro-Learning</h3>
+                            <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                Learn programming concepts in 5-15 minute videos optimized for TikTok and Instagram.
+                            </p>
+                        </div>
+                        
+                        <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl shadow-xl p-8 card-hover border border-slate-200 dark:border-slate-700">
+                            <div class="text-4xl mb-4 text-center">🎥</div>
+                            <h3 class="text-xl font-semibold mb-3 text-purple-600 dark:text-purple-400">Deep Dives</h3>
+                            <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                Comprehensive tutorials on YouTube that cover entire topics from start to finish.
+                            </p>
+                        </div>
+                        
+                        <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl shadow-xl p-8 card-hover border border-slate-200 dark:border-slate-700">
+                            <div class="text-4xl mb-4 text-center">💻</div>
+                            <h3 class="text-xl font-semibold mb-3 text-pink-600 dark:text-pink-400">Hands-On Practice</h3>
+                            <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                Code along with our lessons using GitHub repositories with exercises and solutions.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-2xl shadow-2xl p-8 md:p-12 text-white">
+                        <div class="max-w-4xl mx-auto text-center">
+                            <h3 class="text-2xl md:text-3xl font-bold mb-4">Ready to Start Your Coding Journey?</h3>
+                            <p class="text-indigo-100 text-lg mb-6">
+                                New lessons published every week across multiple platforms. 
+                                Follow us to never miss a tutorial!
+                            </p>
+                            <div class="flex flex-wrap justify-center gap-4">
+                                <a href="#" class="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-2">
+                                    <i class="fab fa-youtube"></i> Subscribe on YouTube
+                                </a>
+                                <a href="#" class="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-2">
+                                    <i class="fab fa-tiktok"></i> Follow on TikTok
+                                </a>
+                                <a href="#" class="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-2">
+                                    <i class="fab fa-instagram"></i> Follow on Instagram
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderLessons() {
+            return `
+                <div>
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                        <div>
+                            <h2 class="text-3xl font-bold gradient-text">All Lessons</h2>
+                            <p class="text-slate-600 dark:text-slate-400 mt-2">
+                                Complete library of programming tutorials
+                            </p>
+                        </div>
+                        <div class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                            ${state.data.lessons.length} lessons
+                        </div>
+                    </div>
+                    
+                    <div class="grid gap-6">
+                        ${state.data.lessons.map(lesson => `
+                            <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 border border-slate-200 dark:border-slate-700 card-hover">
+                                <div class="p-6">
+                                    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                                        <div class="flex-1">
+                                            <div class="flex flex-wrap items-center gap-3 mb-3">
+                                                <h3 class="text-xl font-semibold text-indigo-600 dark:text-indigo-400">${lesson.title}</h3>
+                                                ${renderPlatformIcon(lesson.platform)}
+                                                <span class="text-sm bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded-lg">${lesson.platform}</span>
+                                            </div>
+                                            
+                                            <div class="flex flex-wrap items-center gap-4 mb-4 text-sm">
+                                                ${renderDifficultyBadge(lesson.difficulty)}
+                                                <span class="flex items-center gap-1 text-slate-500 dark:text-slate-400">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                    </svg>
+                                                    ${lesson.duration}
+                                                </span>
+                                            </div>
+                                            
+                                            <p class="text-slate-600 dark:text-slate-400 mb-4 leading-relaxed">${lesson.description}</p>
+                                            
+                                            <a href="${lesson.videoUrl}" target="_blank" rel="noopener noreferrer" 
+                                               class="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-6 py-2 rounded-xl font-medium transition-all duration-200 transform hover:scale-105">
+                                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M8 5v14l11-7z"></path>
+                                                </svg>
+                                                Watch Lesson
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderRoadmap() {
+            return `
+                <div>
+                    <div class="text-center mb-12">
+                        <h2 class="text-3xl font-bold gradient-text mb-4">Learning Roadmap</h2>
+                        <p class="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
+                            Follow our structured curriculum to master programming step by step
+                        </p>
+                    </div>
+                    
+                    <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-slate-200 dark:border-slate-700">
+                        <div class="space-y-8">
+                            ${state.data.roadmap.map((item, index) => `
+                                <div class="flex items-center gap-6">
+                                    <div class="flex-shrink-0">
+                                        <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white ${
+                                            item.status === 'completed' ? 'bg-gradient-to-r from-green-400 to-green-600' :
+                                            item.status === 'current' ? 'bg-gradient-to-r from-indigo-500 to-purple-600 animate-pulse' :
+                                            'bg-slate-300 dark:bg-slate-600'
+                                        }">
+                                            ${item.status === 'completed' ? '✓' : index + 1}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex-1">
+                                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                                            <h3 class="text-lg font-semibold">${item.week}</h3>
+                                            <span class="px-3 py-1 rounded-full text-sm font-medium ${
+                                                item.status === 'completed' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
+                                                item.status === 'current' ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200 font-semibold animate-pulse' :
+                                                'bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300'
+                                            }">
+                                                ${item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+                                            </span>
+                                        </div>
+                                        <p class="text-slate-600 dark:text-slate-400 mt-1">${item.topic}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderNextVideo() {
+            const next = state.data.nextVideoPlan;
+            const today = new Date();
+            const scheduled = new Date(next.scheduledDate);
+            const timeDiff = scheduled - today;
+            const daysUntil = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+            
+            return `
+                <div class="text-center mb-12">
+                    <div class="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium mb-6 animate-pulse">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                        </svg>
+                        Coming Soon in ${daysUntil} days!
+                    </div>
+                    
+                    <h2 class="text-4xl font-bold gradient-text mb-4">Next Video</h2>
+                    <p class="text-xl text-slate-600 dark:text-slate-300 mb-8 max-w-3xl mx-auto">
+                        Don't miss our upcoming lesson on web development fundamentals
+                    </p>
+                </div>
+                
+                <div class="grid gap-8 lg:grid-cols-2">
+                    <!-- Video Card -->
+                    <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-700 card-hover">
+                        <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-1">
+                            <div class="bg-slate-900 dark:bg-slate-900 aspect-video flex items-center justify-center relative overflow-hidden">
+                                <div class="absolute inset-0 bg-gradient-to-br from-indigo-900/20 to-purple-900/20"></div>
+                                <div class="text-center z-10">
+                                    <div class="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M8 5v14l11-7z"/>
+                                        </svg>
+                                    </div>
+                                    <h3 class="text-2xl font-bold text-white mb-2">Preview</h3>
+                                    <p class="text-indigo-100">Video thumbnail coming soon</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-8">
+                            <div class="flex items-center gap-3 mb-4">
+                                <h3 class="text-2xl font-bold text-slate-800 dark:text-white">${next.title}</h3>
+                                ${renderPlatformIcon(next.platform)}
+                                <span class="text-sm bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded-lg">${next.platform}</span>
+                            </div>
+                            
+                            <div class="flex flex-wrap items-center gap-4 mb-6 text-sm">
+                                ${renderDifficultyBadge(next.difficulty)}
+                                <span class="flex items-center gap-1 text-slate-500 dark:text-slate-400">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    ${next.duration}
+                                </span>
+                                <span class="flex items-center gap-1 text-slate-500 dark:text-slate-400">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    ${scheduled.toLocaleDateString()}
+                                </span>
+                            </div>
+                            
+                            <div class="space-y-3">
+                                <h4 class="font-semibold text-slate-800 dark:text-white flex items-center gap-2">
+                                    <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                                    </svg>
+                                    What You'll Learn
+                                </h4>
+                                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">${next.notes}</p>
+                            </div>
+                            
+                            <div class="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
+                                <div class="flex flex-col sm:flex-row gap-4">
+                                    <a href="${state.data.githubRepo}" target="_blank" rel="noopener noreferrer" 
+                                       class="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 text-center">
+                                        <svg class="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+                                        </svg>
+                                        View Code Examples
+                                    </a>
+                                    <button 
+                                       class="flex-1 bg-white dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-800 dark:text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 border border-slate-300 dark:border-slate-600 flex items-center justify-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                        </svg>
+                                        Notify Me
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Additional Info -->
+                    <div class="space-y-6">
+                        <!-- What to Expect -->
+                        <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-slate-200 dark:border-slate-700">
+                            <h3 class="text-xl font-bold mb-6 flex items-center gap-2 text-slate-800 dark:text-white">
+                                <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                                What to Expect
+                            </h3>
+                            <div class="space-y-4">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-2 h-2 bg-indigo-500 rounded-full mt-2 flex-shrink-0"></div>
+                                    <p class="text-slate-600 dark:text-slate-400">Step-by-step HTML structure explanation</p>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <div class="w-2 h-2 bg-indigo-500 rounded-full mt-2 flex-shrink-0"></div>
+                                    <p class="text-slate-600 dark:text-slate-400">CSS styling techniques and best practices</p>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <div class="w-2 h-2 bg-indigo-500 rounded-full mt-2 flex-shrink-0"></div>
+                                    <p class="text-slate-600 dark:text-slate-400">Responsive design principles for mobile devices</p>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <div class="w-2 h-2 bg-indigo-500 rounded-full mt-2 flex-shrink-0"></div>
+                                    <p class="text-slate-600 dark:text-slate-400">Real-world examples and practical exercises</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Share -->
+                        <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl shadow-xl p-8 text-white">
+                            <h3 class="text-xl font-bold mb-4">Love Our Content?</h3>
+                            <p class="mb-6 opacity-90">Help us grow by sharing with your friends!</p>
+                            <div class="flex flex-wrap gap-3">
+                                <a href="#" class="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-4 py-2 rounded-xl transition-all duration-200 flex items-center gap-2">
+                                    <i class="fab fa-youtube"></i> Share
+                                </a>
+                                <a href="#" class="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-4 py-2 rounded-xl transition-all duration-200 flex items-center gap-2">
+                                    <i class="fab fa-tiktok"></i> Share
+                                </a>
+                                <a href="#" class="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-4 py-2 rounded-xl transition-all duration-200 flex items-center gap-2">
+                                    <i class="fab fa-instagram"></i> Share
+                                </a>
+                                <a href="#" class="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-4 py-2 rounded-xl transition-all duration-200 flex items-center gap-2">
+                                    <i class="fas fa-link"></i> Copy Link
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderFooter() {
+            return `
+                <footer class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-lg shadow-inner mt-20 border-t border-slate-200 dark:border-slate-700">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                        <div class="grid gap-8 md:grid-cols-3">
+                            <div class="text-center md:text-left">
+                                <div class="flex items-center justify-center md:justify-start gap-3 mb-4">
+                                    <div class="w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center">
+                                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                        </svg>
+                                    </div>
+                                    <span class="text-xl font-bold gradient-text">${state.data.title}</span>
+                                </div>
+                                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                    Making programming education accessible to everyone through engaging social media content.
+                                </p>
+                            </div>
+                            
+                            <div class="text-center">
+                                <h4 class="font-semibold mb-4 text-slate-800 dark:text-white">Connect With Us</h4>
+                                <div class="flex justify-center gap-4">
+                                    ${['YouTube', 'TikTok', 'Instagram', 'GitHub'].map(platform => `
+                                        <a href="#" class="w-10 h-10 bg-slate-100 dark:bg-slate-700 hover:bg-indigo-100 dark:hover:bg-indigo-900 rounded-full flex items-center justify-center transition-all duration-200">
+                                            ${renderPlatformIcon(platform)}
+                                        </a>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            
+                            <div class="text-center md:text-right">
+                                <h4 class="font-semibold mb-4 text-slate-800 dark:text-white">Quick Links</h4>
+                                <div class="space-y-2">
+                                    <a href="#" onclick="setActiveTab('home')" class="block text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400">Home</a>
+                                    <a href="#" onclick="setActiveTab('lessons')" class="block text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400">Lessons</a>
+                                    <a href="#" onclick="setActiveTab('roadmap')" class="block text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400">Roadmap</a>
+                                    <a href="#" onclick="setActiveTab('next')" class="block text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400">Next Video</a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="border-t border-slate-200 dark:border-slate-700 mt-8 pt-8 text-center">
+                            <p class="text-slate-500 dark:text-slate-400 text-sm">
+                                © 2024 ${state.data.title}. All rights reserved. | Designed with ❤️ for aspiring developers
+                            </p>
+                        </div>
+                    </div>
+                </footer>
+            `;
+        }
+
+        function renderPlatformIcon(platform) {
+            const icons = {
+                YouTube: '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>',
+                TikTok: '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.02 3.91-.02 1.64 0 3.29.01 4.93.05 1.21.04 2.13.41 2.73 1.14.65.79.93 1.77.9 2.82-.08 2.2-.54 4.37-1.36 6.44-.83 2.07-2.05 3.9-3.72 5.41-1.67 1.51-3.73 2.6-6.03 3.19-2.3.58-4.7.69-7.08.33-2.38-.36-4.56-1.16-6.41-2.35-1.84-1.2-3.31-2.76-4.34-4.63-.21-.38-.4-.78-.58-1.18-.06-.11-.11-.23-.17-.34-.04-.07-.07-.15-.11-.22-.19-.42-.36-.85-.51-1.28-.06-.19-.12-.38-.17-.58-.06-.2-.11-.4-.16-.6-.02-.09-.04-.19-.06-.28-.02-.11-.05-.22-.07-.33-.01-.06-.03-.11-.04-.17-.06-.25-.12-.5-.17-.75-.02-.08-.03-.16-.05-.24-.03-.13-.06-.27-.08-.4-.02-.12-.04-.25-.06-.37-.01-.07-.03-.14-.04-.21-.03-.16-.06-.32-.08-.48-.01-.09-.03-.18-.04-.27-.02-.12-.04-.25-.06-.37-.01-.07-.03-.14-.04-.21-.03-.16-.06-.32-.08-.48 0 0 0 0 0 0l.01-.03c.03-.21.07-.42.1-.63.03-.19.07-.37.11-.56.03-.15.07-.3.11-.45.04-.14.08-.28.13-.42.04-.12.08-.25.13-.37.05-.1.1-.2.15-.3.05-.09.11-.17.16-.26.05-.08.11-.15.17-.23.06-.08.12-.15.18-.22.06-.07.13-.14.19-.2.07-.07.14-.13.21-.19.07-.06.15-.12.22-.18.08-.05.16-.1.24-.15.08-.05.17-.09.25-.13.09-.05.18-.09.27-.13.09-.04.19-.07.28-.09.1-.03.2-.06.3-.09.1-.03.21-.05.31-.07.11-.02.22-.04.33-.06.11-.02.23-.03.34-.05.12-.01.24-.02.36-.03.12-.01.25-.01.37-.01.26 0 .51.01.77.03.25.02.5.05.74.09.48.07.95.19 1.4.36.44.16.86.38 1.25.65.38.27.73.59 1.05.95.32.36.6.77.85 1.22.25.45.46.94.63 1.47.17.53.3 1.1.39 1.71.09.61.13 1.25.13 1.92v.03c0 1.48-.29 2.92-.86 4.33-.57 1.41-1.42 2.67-2.55 3.78-1.13 1.11-2.5 2.02-4.09 2.71-1.6.69-3.38 1.04-5.35 1.04-1.7 0-3.31-.22-4.85-.66-1.54-.44-2.93-1.11-4.18-2.02-1.25-.91-2.3-2.05-3.16-3.42-.86-1.37-1.29-2.95-1.29-4.73 0-1.09.15-2.17.45-3.23.3-.1 1.35-4.35 3.15-7.55L12.525.02z"/></svg>',
+                Instagram: '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.017 0C8.896 0 8.683.01 7.213.08c-1.47.07-2.38.36-3.12.83a4.92 4.92 0 0 0-1.89 1.89c-.47.74-.76 1.65-.83 3.12-.07 1.47-.08 1.68-.08 4.8 0 3.12.01 3.33.08 4.8.07 1.47.36 2.38.83 3.12a4.92 4.92 0 0 0 1.89 1.89c.74.47 1.65.76 3.12.83 1.47.07 1.68.08 4.8.08 3.12 0 3.33-.01 4.8-.08 1.47-.07 2.38-.36 3.12-.83a4.92 4.92 0 0 0 1.89-1.89c.47-.74.76-1.65.83-3.12.07-1.47.08-1.68.08-4.8 0-3.12-.01-3.33-.08-4.8-.07-1.47-.36-2.38-.83-3.12a4.92 4.92 0 0 0-1.89-1.89c-.74-.47-1.65-.76-3.12-.83-1.47-.07-1.68-.08-4.8-.08zm0 1.704a10.282 10.282 0 0 1 3.184.52c2.755.968 4.649 2.862 5.616 5.616a10.282 10.282 0 0 1 .52 3.184c0 3.035-.01 3.332-.085 4.584-.072 1.25-.36 2.077-.83 2.817-.47.74-1.068 1.337-1.808 1.808-.74.47-1.567.758-2.817.83-1.25.075-1.548.085-4.584.085-3.035 0-3.332-.01-4.584-.085-1.25-.072-2.077-.36-2.817-.83-.74-.47-1.337-1.068-1.808-1.808-.47-.74-.758-1.567-.83-2.817-.075-1.25-.085-1.548-.085-4.584 0-3.035.01-3.332.085-4.584.072-1.25.36-2.077.83-2.817.47-.74 1.068-1.337 1.808-1.808.74-.47 1.567-.758 2.817-.83 1.25-.075 1.548-.085 4.584-.085zm0 2.315c-3.07 0-3.348.012-4.58.085-1.183.07-1.81.318-2.278.583a3.22 3.22 0 0 0-1.126 1.126c-.265.468-.513 1.095-.583 2.278-.073 1.232-.085 1.51-.085 4.58 0 3.07.012 3.348.085 4.58.07 1.183.318 1.81.583 2.278a3.22 3.22 0 0 0 1.126 1.126c.468.265 1.095.513 2.278.583 1.232.073 1.51.085 4.58.085 3.07 0 3.348-.012 4.58-.085 1.183-.07 1.81-.318 2.278-.583a3.22 3.22 0 0 0 1.126-1.126c.265.468.513 1.095.583 2.278.073 1.232.085 1.51.085 4.58 0 3.07-.012 3.348-.085 4.58-.07 1.183-.318 1.81-.583 2.278a3.22 3.22 0 0 0-1.126 1.126c-.468.265-1.095.513-2.278.583-1.232.073-1.51.085-4.58.085zm0 8.254c-1.83 0-3.276-1.446-3.276-3.276 0-1.83 1.446-3.276 3.276-3.276 1.83 0 3.276 1.446 3.276 3.276 0 1.83-1.446 3.276-3.276 3.276zm6.407-8.779a1.44 1.44 0 1 1 0-2.88 1.44 1.44 0 0 1 0 2.88z"/></svg>',
+                GitHub: '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>'
+            };
+            return `<span class="text-red-600 dark:text-pink-400">${icons[platform]}</span>`;
+        }
+
+        function renderDifficultyBadge(difficulty) {
+            const colors = {
+                Beginner: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+                Intermediate: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
+                Advanced: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+            };
+            return `<span class="px-3 py-1 rounded-full text-sm font-medium ${colors[difficulty]}">${difficulty}</span>`;
+        }
+
+        function addEventListeners() {
+            // Add smooth scrolling for navigation
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', render);
+    </script>
+</body>
+</html>
