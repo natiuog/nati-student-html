@@ -49,6 +49,20 @@
             50% { opacity: 0.5; }
             100% { opacity: 1; }
         }
+        
+        .social-icon {
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            transform: scale(1.1);
+        }
     </style>
     <script>
         tailwind.config = {
@@ -59,6 +73,10 @@
                         primary: '#4F46E5',
                         secondary: '#EC4899',
                         accent: '#10B981',
+                        facebook: '#1877F2',
+                        twitter: '#1DA1F2',
+                        linkedin: '#0A66C2',
+                        whatsapp: '#25D366',
                     },
                     animation: {
                         'spin-slow': 'spin 3s linear infinite',
@@ -290,6 +308,18 @@
                                 <a href="#" class="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-2">
                                     <i class="fab fa-instagram"></i> Follow on Instagram
                                 </a>
+                                <a href="#" class="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-2">
+                                    <i class="fab fa-facebook"></i> Follow on Facebook
+                                </a>
+                                <a href="#" class="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-2">
+                                    <i class="fab fa-twitter"></i> Follow on Twitter
+                                </a>
+                                <a href="#" class="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-2">
+                                    <i class="fab fa-linkedin"></i> Connect on LinkedIn
+                                </a>
+                                <a href="#" class="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-2">
+                                    <i class="fab fa-whatsapp"></i> Join WhatsApp Group
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -323,7 +353,7 @@
                                         <div class="flex-1">
                                             <div class="flex flex-wrap items-center gap-3 mb-3">
                                                 <h3 class="text-xl font-semibold text-indigo-600 dark:text-indigo-400">${lesson.title}</h3>
-                                                ${renderPlatformIcon(lesson.platform)}
+                                                ${renderPlatformIcon(lesson.platform, true)}
                                                 <span class="text-sm bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded-lg">${lesson.platform}</span>
                                             </div>
                                             
@@ -444,7 +474,7 @@
                         <div class="p-8">
                             <div class="flex items-center gap-3 mb-4">
                                 <h3 class="text-2xl font-bold text-slate-800 dark:text-white">${next.title}</h3>
-                                ${renderPlatformIcon(next.platform)}
+                                ${renderPlatformIcon(next.platform, true)}
                                 <span class="text-sm bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded-lg">${next.platform}</span>
                             </div>
                             
@@ -540,6 +570,12 @@
                                     <i class="fab fa-instagram"></i> Share
                                 </a>
                                 <a href="#" class="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-4 py-2 rounded-xl transition-all duration-200 flex items-center gap-2">
+                                    <i class="fab fa-facebook"></i> Share
+                                </a>
+                                <a href="#" class="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-4 py-2 rounded-xl transition-all duration-200 flex items-center gap-2">
+                                    <i class="fab fa-twitter"></i> Share
+                                </a>
+                                <a href="#" class="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-4 py-2 rounded-xl transition-all duration-200 flex items-center gap-2">
                                     <i class="fas fa-link"></i> Copy Link
                                 </a>
                             </div>
@@ -571,9 +607,9 @@
                             <div class="text-center">
                                 <h4 class="font-semibold mb-4 text-slate-800 dark:text-white">Connect With Us</h4>
                                 <div class="flex justify-center gap-4">
-                                    ${['YouTube', 'TikTok', 'Instagram', 'GitHub'].map(platform => `
+                                    ${['YouTube', 'TikTok', 'Instagram', 'GitHub', 'Facebook', 'Twitter', 'LinkedIn', 'WhatsApp'].map(platform => `
                                         <a href="#" class="w-10 h-10 bg-slate-100 dark:bg-slate-700 hover:bg-indigo-100 dark:hover:bg-indigo-900 rounded-full flex items-center justify-center transition-all duration-200">
-                                            ${renderPlatformIcon(platform)}
+                                            ${renderPlatformIcon(platform, true)}
                                         </a>
                                     `).join('')}
                                 </div>
@@ -600,14 +636,31 @@
             `;
         }
 
-        function renderPlatformIcon(platform) {
+        function renderPlatformIcon(platform, isColored = false) {
             const icons = {
-                YouTube: '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>',
-                TikTok: '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.02 3.91-.02 1.64 0 3.29.01 4.93.05 1.21.04 2.13.41 2.73 1.14.65.79.93 1.77.9 2.82-.08 2.2-.54 4.37-1.36 6.44-.83 2.07-2.05 3.9-3.72 5.41-1.67 1.51-3.73 2.6-6.03 3.19-2.3.58-4.7.69-7.08.33-2.38-.36-4.56-1.16-6.41-2.35-1.84-1.2-3.31-2.76-4.34-4.63-.21-.38-.4-.78-.58-1.18-.06-.11-.11-.23-.17-.34-.04-.07-.07-.15-.11-.22-.19-.42-.36-.85-.51-1.28-.06-.19-.12-.38-.17-.58-.06-.2-.11-.4-.16-.6-.02-.09-.04-.19-.06-.28-.02-.11-.05-.22-.07-.33-.01-.06-.03-.11-.04-.17-.06-.25-.12-.5-.17-.75-.02-.08-.03-.16-.05-.24-.03-.13-.06-.27-.08-.4-.02-.12-.04-.25-.06-.37-.01-.07-.03-.14-.04-.21-.03-.16-.06-.32-.08-.48-.01-.09-.03-.18-.04-.27-.02-.12-.04-.25-.06-.37-.01-.07-.03-.14-.04-.21-.03-.16-.06-.32-.08-.48 0 0 0 0 0 0l.01-.03c.03-.21.07-.42.1-.63.03-.19.07-.37.11-.56.03-.15.07-.3.11-.45.04-.14.08-.28.13-.42.04-.12.08-.25.13-.37.05-.1.1-.2.15-.3.05-.09.11-.17.16-.26.05-.08.11-.15.17-.23.06-.08.12-.15.18-.22.06-.07.13-.14.19-.2.07-.07.14-.13.21-.19.07-.06.15-.12.22-.18.08-.05.16-.1.24-.15.08-.05.17-.09.25-.13.09-.05.18-.09.27-.13.09-.04.19-.07.28-.09.1-.03.2-.06.3-.09.1-.03.21-.05.31-.07.11-.02.22-.04.33-.06.11-.02.23-.03.34-.05.12-.01.24-.02.36-.03.12-.01.25-.01.37-.01.26 0 .51.01.77.03.25.02.5.05.74.09.48.07.95.19 1.4.36.44.16.86.38 1.25.65.38.27.73.59 1.05.95.32.36.6.77.85 1.22.25.45.46.94.63 1.47.17.53.3 1.1.39 1.71.09.61.13 1.25.13 1.92v.03c0 1.48-.29 2.92-.86 4.33-.57 1.41-1.42 2.67-2.55 3.78-1.13 1.11-2.5 2.02-4.09 2.71-1.6.69-3.38 1.04-5.35 1.04-1.7 0-3.31-.22-4.85-.66-1.54-.44-2.93-1.11-4.18-2.02-1.25-.91-2.3-2.05-3.16-3.42-.86-1.37-1.29-2.95-1.29-4.73 0-1.09.15-2.17.45-3.23.3-.1 1.35-4.35 3.15-7.55L12.525.02z"/></svg>',
-                Instagram: '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.017 0C8.896 0 8.683.01 7.213.08c-1.47.07-2.38.36-3.12.83a4.92 4.92 0 0 0-1.89 1.89c-.47.74-.76 1.65-.83 3.12-.07 1.47-.08 1.68-.08 4.8 0 3.12.01 3.33.08 4.8.07 1.47.36 2.38.83 3.12a4.92 4.92 0 0 0 1.89 1.89c.74.47 1.65.76 3.12.83 1.47.07 1.68.08 4.8.08 3.12 0 3.33-.01 4.8-.08 1.47-.07 2.38-.36 3.12-.83a4.92 4.92 0 0 0 1.89-1.89c.47-.74.76-1.65.83-3.12.07-1.47.08-1.68.08-4.8 0-3.12-.01-3.33-.08-4.8-.07-1.47-.36-2.38-.83-3.12a4.92 4.92 0 0 0-1.89-1.89c-.74-.47-1.65-.76-3.12-.83-1.47-.07-1.68-.08-4.8-.08zm0 1.704a10.282 10.282 0 0 1 3.184.52c2.755.968 4.649 2.862 5.616 5.616a10.282 10.282 0 0 1 .52 3.184c0 3.035-.01 3.332-.085 4.584-.072 1.25-.36 2.077-.83 2.817-.47.74-1.068 1.337-1.808 1.808-.74.47-1.567.758-2.817.83-1.25.075-1.548.085-4.584.085-3.035 0-3.332-.01-4.584-.085-1.25-.072-2.077-.36-2.817-.83-.74-.47-1.337-1.068-1.808-1.808-.47-.74-.758-1.567-.83-2.817-.075-1.25-.085-1.548-.085-4.584 0-3.035.01-3.332.085-4.584.072-1.25.36-2.077.83-2.817.47-.74 1.068-1.337 1.808-1.808.74-.47 1.567-.758 2.817-.83 1.25-.075 1.548-.085 4.584-.085zm0 2.315c-3.07 0-3.348.012-4.58.085-1.183.07-1.81.318-2.278.583a3.22 3.22 0 0 0-1.126 1.126c-.265.468-.513 1.095-.583 2.278-.073 1.232-.085 1.51-.085 4.58 0 3.07.012 3.348.085 4.58.07 1.183.318 1.81.583 2.278a3.22 3.22 0 0 0 1.126 1.126c.468.265 1.095.513 2.278.583 1.232.073 1.51.085 4.58.085 3.07 0 3.348-.012 4.58-.085 1.183-.07 1.81-.318 2.278-.583a3.22 3.22 0 0 0 1.126-1.126c.265.468.513 1.095.583 2.278.073 1.232.085 1.51.085 4.58 0 3.07-.012 3.348-.085 4.58-.07 1.183-.318 1.81-.583 2.278a3.22 3.22 0 0 0-1.126 1.126c-.468.265-1.095.513-2.278.583-1.232.073-1.51.085-4.58.085zm0 8.254c-1.83 0-3.276-1.446-3.276-3.276 0-1.83 1.446-3.276 3.276-3.276 1.83 0 3.276 1.446 3.276 3.276 0 1.83-1.446 3.276-3.276 3.276zm6.407-8.779a1.44 1.44 0 1 1 0-2.88 1.44 1.44 0 0 1 0 2.88z"/></svg>',
-                GitHub: '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>'
+                YouTube: '<i class="fab fa-youtube"></i>',
+                TikTok: '<i class="fab fa-tiktok"></i>',
+                Instagram: '<i class="fab fa-instagram"></i>',
+                GitHub: '<i class="fab fa-github"></i>',
+                Facebook: '<i class="fab fa-facebook-f"></i>',
+                Twitter: '<i class="fab fa-twitter"></i>',
+                LinkedIn: '<i class="fab fa-linkedin-in"></i>',
+                WhatsApp: '<i class="fab fa-whatsapp"></i>'
             };
-            return `<span class="text-red-600 dark:text-pink-400">${icons[platform]}</span>`;
+            
+            const colors = {
+                YouTube: 'text-red-600',
+                TikTok: 'text-black dark:text-white',
+                Instagram: 'text-gradient-to-r from-purple-500 to-pink-500',
+                GitHub: 'text-slate-700 dark:text-slate-300',
+                Facebook: 'text-facebook',
+                Twitter: 'text-twitter',
+                LinkedIn: 'text-linkedin',
+                WhatsApp: 'text-whatsapp'
+            };
+            
+            const colorClass = isColored ? colors[platform] : 'text-slate-700 dark:text-slate-300';
+            return `<span class="${colorClass}">${icons[platform]}</span>`;
         }
 
         function renderDifficultyBadge(difficulty) {
