@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -63,6 +62,14 @@
         .social-icon:hover {
             transform: scale(1.1);
         }
+
+        /* Added to handle tab switching */
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
     </style>
     <script>
         tailwind.config = {
@@ -87,175 +94,55 @@
     </script>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-purple-900 dark:to-slate-800 text-slate-800 dark:text-slate-100 transition-colors duration-200">
-    <div id="app"></div>
-
-    <script>
-        // Default state without admin features
-        const DEFAULT_STATE = {
-            title: "CodeWithStudents",
-            tagline: "Learn Programming Through Social Media",
-            githubRepo: "https://github.com/teachcode/curriculum",
-            nextVideoPlan: {
-                title: "HTML & CSS Crash Course",
-                notes: "In this comprehensive lesson, we'll dive into the fundamentals of web development. You'll learn how to create basic HTML structure, apply CSS styling, and implement responsive design principles. Perfect for absolute beginners who want to build their first website!",
-                platform: "YouTube",
-                difficulty: "Beginner",
-                duration: "25:45",
-                scheduledDate: "2024-01-29"
-            },
-            lessons: [
-                {
-                    id: 1,
-                    title: "Introduction to Python",
-                    description: "Variables, data types, and basic syntax in Python.",
-                    platform: "YouTube",
-                    videoUrl: "https://youtube.com/lesson1",
-                    published: true,
-                    difficulty: "Beginner",
-                    duration: "15:30"
-                },
-                {
-                    id: 2,
-                    title: "JavaScript Variables & Data Types",
-                    description: "Understanding var, let, const and primitive types.",
-                    platform: "TikTok",
-                    videoUrl: "https://tiktok.com/lesson2",
-                    published: true,
-                    difficulty: "Beginner",
-                    duration: "8:45"
-                },
-                {
-                    id: 3,
-                    title: "React Components Deep Dive",
-                    description: "Props, state, and component lifecycle in React.",
-                    platform: "Instagram",
-                    videoUrl: "https://instagram.com/lesson3",
-                    published: true,
-                    difficulty: "Intermediate",
-                    duration: "22:10"
-                },
-                {
-                    id: 4,
-                    title: "Python Functions & Loops",
-                    description: "Writing functions, for/while loops, and control flow.",
-                    platform: "YouTube",
-                    videoUrl: "https://youtube.com/lesson4",
-                    published: true,
-                    difficulty: "Beginner",
-                    duration: "18:20"
-                }
-            ],
-            roadmap: [
-                { week: "Week 1", topic: "Programming Fundamentals", status: "completed" },
-                { week: "Week 2", topic: "Variables & Data Types", status: "completed" },
-                { week: "Week 3", topic: "Control Flow & Loops", status: "completed" },
-                { week: "Week 4", topic: "Functions & Modules", status: "current" },
-                { week: "Week 5", topic: "Object-Oriented Programming", status: "upcoming" },
-                { week: "Week 6", topic: "Web Development Basics", status: "upcoming" }
-            ]
-        };
-
-        // App state
-        let state = {
-            data: DEFAULT_STATE,
-            activeTab: 'home',
-            currentTime: new Date()
-        };
-
-        // Update functions
-        function setActiveTab(tab) {
-            state.activeTab = tab;
-            render();
-        }
-
-        // Render functions
-        function render() {
-            // Update current time
-            state.currentTime = new Date();
-            
-            const app = document.getElementById('app');
-            app.innerHTML = `
-                ${renderHeader()}
-                <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                    ${renderContent()}
-                </main>
-                ${renderFooter()}
-            `;
-
-            // Start time update interval
-            if (!document.getElementById('timeInterval')) {
-                const timeInterval = document.createElement('div');
-                timeInterval.id = 'timeInterval';
-                document.body.appendChild(timeInterval);
-                setInterval(render, 1000);
-            }
-
-            // Add event listeners
-            addEventListeners();
-        }
-
-        function renderHeader() {
-            return `
-                <header class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-lg shadow-lg sticky top-0 z-50 border-b border-slate-200 dark:border-slate-700">
-                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div class="flex justify-between items-center py-4">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg floating">
-                                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h1 class="text-2xl font-bold gradient-text">
-                                        ${state.data.title}
-                                    </h1>
-                                    <p class="text-sm text-slate-600 dark:text-slate-400">${state.data.tagline}</p>
-                                </div>
-                            </div>
-                            <div class="text-sm text-slate-500 dark:text-slate-400 font-mono">
-                                <div class="flex items-center space-x-2">
-                                    <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                    <span>${state.currentTime.toLocaleTimeString()}</span>
-                                </div>
-                            </div>
+    <div id="app">
+        <header class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-lg shadow-lg sticky top-0 z-50 border-b border-slate-200 dark:border-slate-700">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center py-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg floating">
+                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                            </svg>
                         </div>
-                        
-                        <nav class="flex space-x-8 border-t dark:border-slate-700 pt-2">
-                            ${['home', 'lessons', 'roadmap', 'next'].map(tab => {
-                                const labels = { home: 'Home', lessons: 'Lessons', roadmap: 'Roadmap', next: 'Next Video' };
-                                const icons = { home: '🏠', lessons: '📚', roadmap: '🎯', next: '▶️' };
-                                return `
-                                    <button onclick="setActiveTab('${tab}')" class="py-3 px-1 border-b-2 font-medium text-sm transition-all duration-200 ${state.activeTab === tab ? 'border-indigo-500 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400' : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300 hover:border-slate-300'}">
-                                        <span class="mr-2">${icons[tab]}</span>
-                                        ${labels[tab]}
-                                    </button>
-                                `;
-                            }).join('')}
-                        </nav>
+                        <div>
+                            <h1 class="text-2xl font-bold gradient-text">CodeWithStudents</h1>
+                            <p class="text-sm text-slate-600 dark:text-slate-400">Learn Programming Through Social Media</p>
+                        </div>
                     </div>
-                </header>
-            `;
-        }
+                    <div class="text-sm text-slate-500 dark:text-slate-400 font-mono">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span id="current-time">${new Date().toLocaleTimeString()}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <nav class="flex space-x-8 border-t dark:border-slate-700 pt-2">
+                    <button onclick="setActiveTab('home')" class="py-3 px-1 border-b-2 font-medium text-sm border-indigo-500 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400">
+                        <span class="mr-2">🏠</span>
+                        Home
+                    </button>
+                    <button onclick="setActiveTab('lessons')" class="py-3 px-1 border-b-2 font-medium text-sm border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300 hover:border-slate-300">
+                        <span class="mr-2">📚</span>
+                        Lessons
+                    </button>
+                    <button onclick="setActiveTab('roadmap')" class="py-3 px-1 border-b-2 font-medium text-sm border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300 hover:border-slate-300">
+                        <span class="mr-2">🎯</span>
+                        Roadmap
+                    </button>
+                    <button onclick="setActiveTab('next')" class="py-3 px-1 border-b-2 font-medium text-sm border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300 hover:border-slate-300">
+                        <span class="mr-2">▶️</span>
+                        Next Video
+                    </button>
+                </nav>
+            </div>
+        </header>
 
-        function renderContent() {
-            switch (state.activeTab) {
-                case 'home':
-                    return renderHome();
-                case 'lessons':
-                    return renderLessons();
-                case 'roadmap':
-                    return renderRoadmap();
-                case 'next':
-                    return renderNextVideo();
-                default:
-                    return renderHome();
-            }
-        }
-
-        function renderHome() {
-            return `
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Home Tab -->
+            <div id="home-content" class="tab-content active">
                 <div class="text-center mb-12">
                     <h2 class="text-4xl md:text-5xl font-bold mb-6 gradient-text">
                         Master Programming Through Bite-Sized Lessons
@@ -324,11 +211,10 @@
                         </div>
                     </div>
                 </div>
-            `;
-        }
+            </div>
 
-        function renderLessons() {
-            return `
+            <!-- Lessons Tab -->
+            <div id="lessons-content" class="tab-content">
                 <div>
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                         <div>
@@ -341,53 +227,52 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                             </svg>
-                            ${state.data.lessons.length} lessons
+                            4 lessons
                         </div>
                     </div>
                     
                     <div class="grid gap-6">
-                        ${state.data.lessons.map(lesson => `
-                            <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 border border-slate-200 dark:border-slate-700 card-hover">
-                                <div class="p-6">
-                                    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-                                        <div class="flex-1">
-                                            <div class="flex flex-wrap items-center gap-3 mb-3">
-                                                <h3 class="text-xl font-semibold text-indigo-600 dark:text-indigo-400">${lesson.title}</h3>
-                                                ${renderPlatformIcon(lesson.platform, true)}
-                                                <span class="text-sm bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded-lg">${lesson.platform}</span>
-                                            </div>
-                                            
-                                            <div class="flex flex-wrap items-center gap-4 mb-4 text-sm">
-                                                ${renderDifficultyBadge(lesson.difficulty)}
-                                                <span class="flex items-center gap-1 text-slate-500 dark:text-slate-400">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                                    </svg>
-                                                    ${lesson.duration}
-                                                </span>
-                                            </div>
-                                            
-                                            <p class="text-slate-600 dark:text-slate-400 mb-4 leading-relaxed">${lesson.description}</p>
-                                            
-                                            <a href="${lesson.videoUrl}" target="_blank" rel="noopener noreferrer" 
-                                               class="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-6 py-2 rounded-xl font-medium transition-all duration-200 transform hover:scale-105">
-                                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                                    <path d="M8 5v14l11-7z"></path>
-                                                </svg>
-                                                Watch Lesson
-                                            </a>
+                        <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 border border-slate-200 dark:border-slate-700 card-hover">
+                            <div class="p-6">
+                                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                                    <div class="flex-1">
+                                        <div class="flex flex-wrap items-center gap-3 mb-3">
+                                            <h3 class="text-xl font-semibold text-indigo-600 dark:text-indigo-400">Introduction to Python</h3>
+                                            <span class="fab fa-youtube text-red-600"></span>
+                                            <span class="text-sm bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded-lg">YouTube</span>
                                         </div>
+                                        
+                                        <div class="flex flex-wrap items-center gap-4 mb-4 text-sm">
+                                            <span class="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">Beginner</span>
+                                            <span class="flex items-center gap-1 text-slate-500 dark:text-slate-400">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                </svg>
+                                                15:30
+                                            </span>
+                                        </div>
+                                        
+                                        <p class="text-slate-600 dark:text-slate-400 mb-4 leading-relaxed">Variables, data types, and basic syntax in Python.</p>
+                                        
+                                        <a href="https://youtube.com/lesson1" target="_blank" rel="noopener noreferrer" 
+                                           class="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-6 py-2 rounded-xl font-medium transition-all duration-200 transform hover:scale-105">
+                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M8 5v14l11-7z"></path>
+                                            </svg>
+                                            Watch Lesson
+                                        </a>
                                     </div>
                                 </div>
                             </div>
-                        `).join('')}
+                        </div>
+                        
+                        <!-- More lessons would go here -->
                     </div>
                 </div>
-            `;
-        }
+            </div>
 
-        function renderRoadmap() {
-            return `
+            <!-- Roadmap Tab -->
+            <div id="roadmap-content" class="tab-content">
                 <div>
                     <div class="text-center mb-12">
                         <h2 class="text-3xl font-bold gradient-text mb-4">Learning Roadmap</h2>
@@ -398,53 +283,136 @@
                     
                     <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-slate-200 dark:border-slate-700">
                         <div class="space-y-8">
-                            ${state.data.roadmap.map((item, index) => `
-                                <div class="flex items-center gap-6">
-                                    <div class="flex-shrink-0">
-                                        <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white ${
-                                            item.status === 'completed' ? 'bg-gradient-to-r from-green-400 to-green-600' :
-                                            item.status === 'current' ? 'bg-gradient-to-r from-indigo-500 to-purple-600 animate-pulse' :
-                                            'bg-slate-300 dark:bg-slate-600'
-                                        }">
-                                            ${item.status === 'completed' ? '✓' : index + 1}
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="flex-1">
-                                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                                            <h3 class="text-lg font-semibold">${item.week}</h3>
-                                            <span class="px-3 py-1 rounded-full text-sm font-medium ${
-                                                item.status === 'completed' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
-                                                item.status === 'current' ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200 font-semibold animate-pulse' :
-                                                'bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300'
-                                            }">
-                                                ${item.status.charAt(0).toUpperCase() + item.status.slice(1)}
-                                            </span>
-                                        </div>
-                                        <p class="text-slate-600 dark:text-slate-400 mt-1">${item.topic}</p>
+                            <div class="flex items-center gap-6">
+                                <div class="flex-shrink-0">
+                                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white bg-gradient-to-r from-green-400 to-green-600">
+                                        ✓
                                     </div>
                                 </div>
-                            `).join('')}
+                                
+                                <div class="flex-1">
+                                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                                        <h3 class="text-lg font-semibold">Week 1</h3>
+                                        <span class="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                            Completed
+                                        </span>
+                                    </div>
+                                    <p class="text-slate-600 dark:text-slate-400 mt-1">Programming Fundamentals</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center gap-6">
+                                <div class="flex-shrink-0">
+                                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white bg-gradient-to-r from-green-400 to-green-600">
+                                        ✓
+                                    </div>
+                                </div>
+                                
+                                <div class="flex-1">
+                                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                                        <h3 class="text-lg font-semibold">Week 2</h3>
+                                        <span class="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                            Completed
+                                        </span>
+                                    </div>
+                                    <p class="text-slate-600 dark:text-slate-400 mt-1">Variables & Data Types</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center gap-6">
+                                <div class="flex-shrink-0">
+                                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white bg-gradient-to-r from-green-400 to-green-600">
+                                        ✓
+                                    </div>
+                                </div>
+                                
+                                <div class="flex-1">
+                                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                                        <h3 class="text-lg font-semibold">Week 3</h3>
+                                        <span class="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                            Completed
+                                        </span>
+                                    </div>
+                                    <p class="text-slate-600 dark:text-slate-400 mt-1">Control Flow & Loops</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center gap-6">
+                                <div class="flex-shrink-0">
+                                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white bg-gradient-to-r from-indigo-500 to-purple-600 animate-pulse">
+                                        4
+                                    </div>
+                                </div>
+                                
+                                <div class="flex-1">
+                                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                                        <h3 class="text-lg font-semibold">Week 4</h3>
+                                        <span class="px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200 font-semibold animate-pulse">
+                                            Current
+                                        </span>
+                                    </div>
+                                    <p class="text-slate-600 dark:text-slate-400 mt-1">Functions & Modules</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center gap-6">
+                                <div class="flex-shrink-0">
+                                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white bg-slate-300 dark:bg-slate-600">
+                                        5
+                                    </div>
+                                </div>
+                                
+                                <div class="flex-1">
+                                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                                        <h3 class="text-lg font-semibold">Week 5</h3>
+                                        <span class="px-3 py-1 rounded-full text-sm font-medium bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300">
+                                            Upcoming
+                                        </span>
+                                    </div>
+                                    <p class="text-slate-600 dark:text-slate-400 mt-1">Object-Oriented Programming</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center gap-6">
+                                <div class="flex-shrink-0">
+                                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white bg-slate-300 dark:bg-slate-600">
+                                        6
+                                    </div>
+                                </div>
+                                
+                                <div class="flex-1">
+                                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                                        <h3 class="text-lg font-semibold">Week 6</h3>
+                                        <span class="px-3 py-1 rounded-full text-sm font-medium bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300">
+                                            Upcoming
+                                        </span>
+                                    </div>
+                                    <p class="text-slate-600 dark:text-slate-400 mt-1">Web Development Basics</p>
+                                </div>
+                            </div>
+
+                            <!-- Link to nati.html -->
+                            <div class="mt-12 text-center">
+                                <a href="nati.html" class="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                    </svg>
+                                    View Detailed Programming Roadmap
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            `;
-        }
+            </div>
 
-        function renderNextVideo() {
-            const next = state.data.nextVideoPlan;
-            const today = new Date();
-            const scheduled = new Date(next.scheduledDate);
-            const timeDiff = scheduled - today;
-            const daysUntil = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-            
-            return `
+            <!-- Next Video Tab -->
+            <div id="next-content" class="tab-content">
                 <div class="text-center mb-12">
                     <div class="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium mb-6 animate-pulse">
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
                         </svg>
-                        Coming Soon in ${daysUntil} days!
+                        Coming Soon in 3 days!
                     </div>
                     
                     <h2 class="text-4xl font-bold gradient-text mb-4">Next Video</h2>
@@ -473,24 +441,24 @@
                         
                         <div class="p-8">
                             <div class="flex items-center gap-3 mb-4">
-                                <h3 class="text-2xl font-bold text-slate-800 dark:text-white">${next.title}</h3>
-                                ${renderPlatformIcon(next.platform, true)}
-                                <span class="text-sm bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded-lg">${next.platform}</span>
+                                <h3 class="text-2xl font-bold text-slate-800 dark:text-white">HTML & CSS Crash Course</h3>
+                                <span class="fab fa-youtube text-red-600"></span>
+                                <span class="text-sm bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded-lg">YouTube</span>
                             </div>
                             
                             <div class="flex flex-wrap items-center gap-4 mb-6 text-sm">
-                                ${renderDifficultyBadge(next.difficulty)}
+                                <span class="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">Beginner</span>
                                 <span class="flex items-center gap-1 text-slate-500 dark:text-slate-400">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                     </svg>
-                                    ${next.duration}
+                                    25:45
                                 </span>
                                 <span class="flex items-center gap-1 text-slate-500 dark:text-slate-400">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                     </svg>
-                                    ${scheduled.toLocaleDateString()}
+                                    ${new Date('2024-01-29').toLocaleDateString()}
                                 </span>
                             </div>
                             
@@ -501,12 +469,12 @@
                                     </svg>
                                     What You'll Learn
                                 </h4>
-                                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">${next.notes}</p>
+                                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">In this comprehensive lesson, we'll dive into the fundamentals of web development. You'll learn how to create basic HTML structure, apply CSS styling, and implement responsive design principles. Perfect for absolute beginners who want to build their first website!</p>
                             </div>
                             
                             <div class="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
                                 <div class="flex flex-col sm:flex-row gap-4">
-                                    <a href="${state.data.githubRepo}" target="_blank" rel="noopener noreferrer" 
+                                    <a href="https://github.com/teachcode/curriculum" target="_blank" rel="noopener noreferrer" 
                                        class="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 text-center">
                                         <svg class="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
@@ -582,110 +550,105 @@
                         </div>
                     </div>
                 </div>
-            `;
-        }
+            </div>
+        </main>
 
-        function renderFooter() {
-            return `
-                <footer class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-lg shadow-inner mt-20 border-t border-slate-200 dark:border-slate-700">
-                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                        <div class="grid gap-8 md:grid-cols-3">
-                            <div class="text-center md:text-left">
-                                <div class="flex items-center justify-center md:justify-start gap-3 mb-4">
-                                    <div class="w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center">
-                                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
-                                        </svg>
-                                    </div>
-                                    <span class="text-xl font-bold gradient-text">${state.data.title}</span>
-                                </div>
-                                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
-                                    Making programming education accessible to everyone through engaging social media content.
-                                </p>
+        <footer class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-lg shadow-inner mt-20 border-t border-slate-200 dark:border-slate-700">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="grid gap-8 md:grid-cols-3">
+                    <div class="text-center md:text-left">
+                        <div class="flex items-center justify-center md:justify-start gap-3 mb-4">
+                            <div class="w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                </svg>
                             </div>
-                            
-                            <div class="text-center">
-                                <h4 class="font-semibold mb-4 text-slate-800 dark:text-white">Connect With Us</h4>
-                                <div class="flex justify-center gap-4">
-                                    ${['YouTube', 'TikTok', 'Instagram', 'GitHub', 'Facebook', 'Twitter', 'LinkedIn', 'WhatsApp'].map(platform => `
-                                        <a href="#" class="w-10 h-10 bg-slate-100 dark:bg-slate-700 hover:bg-indigo-100 dark:hover:bg-indigo-900 rounded-full flex items-center justify-center transition-all duration-200">
-                                            ${renderPlatformIcon(platform, true)}
-                                        </a>
-                                    `).join('')}
-                                </div>
-                            </div>
-                            
-                            <div class="text-center md:text-right">
-                                <h4 class="font-semibold mb-4 text-slate-800 dark:text-white">Quick Links</h4>
-                                <div class="space-y-2">
-                                    <a href="#" onclick="setActiveTab('home')" class="block text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400">Home</a>
-                                    <a href="#" onclick="setActiveTab('lessons')" class="block text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400">Lessons</a>
-                                    <a href="#" onclick="setActiveTab('roadmap')" class="block text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400">Roadmap</a>
-                                    <a href="#" onclick="setActiveTab('next')" class="block text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400">Next Video</a>
-                                </div>
-                            </div>
+                            <span class="text-xl font-bold gradient-text">CodeWithStudents</span>
                         </div>
-                        
-                        <div class="border-t border-slate-200 dark:border-slate-700 mt-8 pt-8 text-center">
-                            <p class="text-slate-500 dark:text-slate-400 text-sm">
-                                © 2024 ${state.data.title}. All rights reserved. | Designed with ❤️ for aspiring developers
-                            </p>
+                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                            Making programming education accessible to everyone through engaging social media content.
+                        </p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <h4 class="font-semibold mb-4 text-slate-800 dark:text-white">Connect With Us</h4>
+                        <div class="flex justify-center gap-4">
+                            <a href="#" class="w-10 h-10 bg-slate-100 dark:bg-slate-700 hover:bg-indigo-100 dark:hover:bg-indigo-900 rounded-full flex items-center justify-center transition-all duration-200">
+                                <i class="fab fa-youtube text-red-600"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-slate-100 dark:bg-slate-700 hover:bg-indigo-100 dark:hover:bg-indigo-900 rounded-full flex items-center justify-center transition-all duration-200">
+                                <i class="fab fa-tiktok"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-slate-100 dark:bg-slate-700 hover:bg-indigo-100 dark:hover:bg-indigo-900 rounded-full flex items-center justify-center transition-all duration-200">
+                                <i class="fab fa-instagram text-purple-500"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-slate-100 dark:bg-slate-700 hover:bg-indigo-100 dark:hover:bg-indigo-900 rounded-full flex items-center justify-center transition-all duration-200">
+                                <i class="fab fa-facebook text-facebook"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-slate-100 dark:bg-slate-700 hover:bg-indigo-100 dark:hover:bg-indigo-900 rounded-full flex items-center justify-center transition-all duration-200">
+                                <i class="fab fa-twitter text-twitter"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-slate-100 dark:bg-slate-700 hover:bg-indigo-100 dark:hover:bg-indigo-900 rounded-full flex items-center justify-center transition-all duration-200">
+                                <i class="fab fa-linkedin-in text-linkedin"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-slate-100 dark:bg-slate-700 hover:bg-indigo-100 dark:hover:bg-indigo-900 rounded-full flex items-center justify-center transition-all duration-200">
+                                <i class="fab fa-whatsapp text-whatsapp"></i>
+                            </a>
                         </div>
                     </div>
-                </footer>
-            `;
-        }
+                    
+                    <div class="text-center md:text-right">
+                        <h4 class="font-semibold mb-4 text-slate-800 dark:text-white">Quick Links</h4>
+                        <div class="space-y-2">
+                            <a href="#" onclick="setActiveTab('home')" class="block text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400">Home</a>
+                            <a href="#" onclick="setActiveTab('lessons')" class="block text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400">Lessons</a>
+                            <a href="#" onclick="setActiveTab('roadmap')" class="block text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400">Roadmap</a>
+                            <a href="#" onclick="setActiveTab('next')" class="block text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400">Next Video</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="border-t border-slate-200 dark:border-slate-700 mt-8 pt-8 text-center">
+                    <p class="text-slate-500 dark:text-slate-400 text-sm">
+                        © 2024 CodeWithStudents. All rights reserved. | Designed with ❤️ for aspiring developers
+                    </p>
+                </div>
+            </div>
+        </footer>
+    </div>
 
-        function renderPlatformIcon(platform, isColored = false) {
-            const icons = {
-                YouTube: '<i class="fab fa-youtube"></i>',
-                TikTok: '<i class="fab fa-tiktok"></i>',
-                Instagram: '<i class="fab fa-instagram"></i>',
-                GitHub: '<i class="fab fa-github"></i>',
-                Facebook: '<i class="fab fa-facebook-f"></i>',
-                Twitter: '<i class="fab fa-twitter"></i>',
-                LinkedIn: '<i class="fab fa-linkedin-in"></i>',
-                WhatsApp: '<i class="fab fa-whatsapp"></i>'
-            };
-            
-            const colors = {
-                YouTube: 'text-red-600',
-                TikTok: 'text-black dark:text-white',
-                Instagram: 'text-gradient-to-r from-purple-500 to-pink-500',
-                GitHub: 'text-slate-700 dark:text-slate-300',
-                Facebook: 'text-facebook',
-                Twitter: 'text-twitter',
-                LinkedIn: 'text-linkedin',
-                WhatsApp: 'text-whatsapp'
-            };
-            
-            const colorClass = isColored ? colors[platform] : 'text-slate-700 dark:text-slate-300';
-            return `<span class="${colorClass}">${icons[platform]}</span>`;
-        }
-
-        function renderDifficultyBadge(difficulty) {
-            const colors = {
-                Beginner: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-                Intermediate: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-                Advanced: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-            };
-            return `<span class="px-3 py-1 rounded-full text-sm font-medium ${colors[difficulty]}">${difficulty}</span>`;
-        }
-
-        function addEventListeners() {
-            // Add smooth scrolling for navigation
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    document.querySelector(this.getAttribute('href')).scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                });
+    <script>
+        // Simple tab switching functionality
+        function setActiveTab(tab) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
             });
+            
+            // Show selected tab content
+            document.getElementById(`${tab}-content`).classList.add('active');
+            
+            // Update active tab styling
+            document.querySelectorAll('nav button').forEach(button => {
+                button.classList.remove('border-indigo-500', 'text-indigo-600', 'dark:border-indigo-400', 'dark:text-indigo-400');
+                button.classList.add('border-transparent', 'text-slate-500', 'hover:text-slate-700', 'dark:text-slate-400', 'dark:hover:text-slate-300', 'hover:border-slate-300');
+            });
+            
+            document.querySelector(`nav button[onclick="setActiveTab('${tab}')"]`).classList.add('border-indigo-500', 'text-indigo-600', 'dark:border-indigo-400', 'dark:text-indigo-400');
+            document.querySelector(`nav button[onclick="setActiveTab('${tab}')"]`).classList.remove('border-transparent', 'text-slate-500', 'hover:text-slate-700', 'dark:text-slate-400', 'dark:hover:text-slate-300', 'hover:border-slate-300');
         }
 
-        // Initialize app
-        document.addEventListener('DOMContentLoaded', render);
+        // Update current time
+        function updateTime() {
+            document.getElementById('current-time').textContent = new Date().toLocaleTimeString();
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // Set home as active by default
+        document.addEventListener('DOMContentLoaded', function() {
+            setActiveTab('home');
+        });
     </script>
 </body>
 </html>
