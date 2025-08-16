@@ -1,0 +1,512 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programming Roadmap</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #4F46E5 0%, #EC4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        .social-icon {
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        .social-icon:hover {
+            transform: scale(1.1);
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4F46E5',
+                        secondary: '#EC4899',
+                        accent: '#10B981',
+                        facebook: '#1877F2',
+                        twitter: '#1DA1F2',
+                        linkedin: '#0A66C2',
+                        whatsapp: '#25D366',
+                    },
+                    animation: {
+                        'spin-slow': 'spin 3s linear infinite',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-purple-900 dark:to-slate-800 text-slate-800 dark:text-slate-100 transition-colors duration-200">
+    <div id="app"></div>
+    <script>
+        // App state
+        let state = {
+            activeTab: 'home',
+            expandedSections: new Set(),
+            currentTime: new Date()
+        };
+
+        // Roadmap data
+        const roadmapData = [
+            {
+                id: 1,
+                title: "Foundations (Beginner Level)",
+                icon: "book-open",
+                topics: [
+                    { 
+                        title: "Introduction to Programming", 
+                        details: "What is programming? Compiled vs Interpreted languages. History & use cases of C, C++, C#, Java, JS, Python. 'Hello World' in all 6 languages. Setting up environments (Compilers, IDEs, VS Code)."
+                    },
+                    { 
+                        title: "Basics of Syntax", 
+                        details: "Structure of a program (main method in C/Java/C#, script style in Python/JS). Comments, indentation, semicolons."
+                    },
+                    { 
+                        title: "Variables & Data Types", 
+                        details: "Declaring variables. Constants. Primitive types: int, float, char, string, bool. Static typing (C, C++, Java, C#) vs dynamic typing (JS, Python)."
+                    },
+                    { 
+                        title: "Operators", 
+                        details: "Arithmetic operators. Relational operators. Logical operators. Assignment & compound assignment. Increment/decrement."
+                    },
+                    { 
+                        title: "Input & Output", 
+                        details: "Console input/output in each language. Printing formatted strings."
+                    },
+                    { 
+                        title: "Type Conversion & Casting", 
+                        details: "Implicit vs explicit casting. String ↔ number conversions."
+                    },
+                    { 
+                        title: "Control Flow", 
+                        details: "if, else if, else. switch / match. Loops: for, while, do…while. break & continue."
+                    },
+                    { 
+                        title: "Functions", 
+                        details: "Defining & calling functions. Parameters, return values. Function overloading (C++, Java, C#). Default parameters (C++, Python, JS). Lambda functions (all modern languages)."
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "Core Programming (Intermediate Level)",
+                icon: "terminal",
+                topics: [
+                    { 
+                        title: "Scope & Lifetime", 
+                        details: "Local vs global variables. Static variables."
+                    },
+                    { 
+                        title: "Arrays & Collections", 
+                        details: "Arrays (fixed size). Strings as character arrays (C) vs objects. Dynamic collections: Python list, dict, set. Java ArrayList, HashMap. C# List<T>, Dictionary<K,V>. JS arrays, objects, Map, Set."
+                    },
+                    { 
+                        title: "Data Structures", 
+                        details: "Linked Lists. Stacks & Queues. Hash tables. Trees (binary, BST)."
+                    },
+                    { 
+                        title: "Algorithms", 
+                        details: "Searching (linear, binary). Sorting (bubble, selection, insertion, quicksort, mergesort). Recursion (factorial, Fibonacci). Big-O complexity basics."
+                    },
+                    { 
+                        title: "Modular Programming", 
+                        details: "Multiple files & headers (C/C++). import, package, namespace. Libraries & modules in all languages."
+                    },
+                    { 
+                        title: "Object-Oriented Programming", 
+                        details: "Classes & objects. Fields, properties, methods. Constructors & destructors. Encapsulation. Inheritance. Polymorphism (overriding, overloading). Abstract classes & interfaces."
+                    },
+                    { 
+                        title: "Error Handling", 
+                        details: "try…catch…finally. Exception types (checked vs unchecked in Java). Error codes in C."
+                    },
+                    { 
+                        title: "File Handling", 
+                        details: "Reading/writing text files. Binary file operations. File streams."
+                    }
+                ]
+            },
+            {
+                id: 3,
+                title: "Advanced Programming (Professional Level)",
+                icon: "cpu",
+                topics: [
+                    { 
+                        title: "Memory Management", 
+                        details: "Stack vs Heap. Pointers (C, C++). Smart pointers (C++). Garbage collection (Java, C#, Python, JS). Memory leaks & profiling."
+                    },
+                    { 
+                        title: "Advanced OOP", 
+                        details: "Multiple inheritance (C++). Mixins (Python). Reflection & runtime type info. Annotations/attributes."
+                    },
+                    { 
+                        title: "Generics & Templates", 
+                        details: "C++ templates. Java & C# generics. TypeScript for JS, type hints in Python."
+                    },
+                    { 
+                        title: "Multithreading & Concurrency", 
+                        details: "Creating threads. Synchronization: mutex, semaphores. Thread pools. Async programming (JS async/await, Python asyncio, C# tasks). Parallel processing."
+                    },
+                    { 
+                        title: "Networking & APIs", 
+                        details: "Socket programming (C/C++/Java/Python). HTTP clients in all languages. Building REST APIs: Node.js (JS), Flask/FastAPI (Python), Spring Boot (Java), ASP.NET (C#)."
+                    },
+                    { 
+                        title: "Functional Programming Concepts", 
+                        details: "First-class functions. Higher-order functions. Immutability. map, filter, reduce. Streams API (Java). LINQ (C#)."
+                    },
+                    { 
+                        title: "Database Integration", 
+                        details: "SQL basics. CRUD operations. ORMs: Hibernate (Java), Entity Framework (C#), Sequelize (JS), SQLAlchemy (Python)."
+                    },
+                    { 
+                        title: "Compiler & Interpreter Concepts", 
+                        details: "Compilation vs interpretation. Bytecode (Java .class, Python .pyc, C# IL). JIT compilation (JVM, .NET, V8, PyPy)."
+                    }
+                ]
+            },
+            {
+                id: 4,
+                title: "Expert Topics (Industry/Research Level)",
+                icon: "zap",
+                topics: [
+                    { 
+                        title: "Software Architecture", 
+                        details: "SOLID principles. Design patterns: Singleton, Factory, Observer, Strategy, Dependency Injection. Clean architecture. Microservices."
+                    },
+                    { 
+                        title: "Parallel & Distributed Systems", 
+                        details: "OpenMP, CUDA (C++). Java concurrency utilities. C# Parallel LINQ (PLINQ). Python multiprocessing. Distributed systems (Hadoop, Spark, Dask)."
+                    },
+                    { 
+                        title: "Security", 
+                        details: "Buffer overflow (C/C++). SQL injection. Cross-site scripting (JS). Authentication (OAuth, JWT). Encryption/decryption libraries."
+                    },
+                    { 
+                        title: "WebAssembly (WASM)", 
+                        details: "Running C/C++/Rust/Python in the browser. Interop with JavaScript."
+                    },
+                    { 
+                        title: "Language Interoperability", 
+                        details: "Python ↔ C (ctypes, cffi). Java JNI. C# P/Invoke. JS ↔ C++ via WebAssembly."
+                    },
+                    { 
+                        title: "Metaprogramming", 
+                        details: "C++ template metaprogramming. Python decorators, metaclasses. C# code generation with Roslyn. Java annotations + reflection. JS proxies."
+                    },
+                    { 
+                        title: "Tooling & Ecosystem Mastery", 
+                        details: "Build tools: CMake, Maven, Gradle, MSBuild, npm, pip. Package managers. CI/CD pipelines (GitHub Actions, Jenkins). Docker + Kubernetes for deployment."
+                    },
+                    { 
+                        title: "Domain-Specific Applications", 
+                        details: "Game Development: Unity (C#), Unreal (C++). AI/ML: Python (TensorFlow, PyTorch). Web Development: MERN stack (JS), Django/Flask (Python), Spring Boot (Java), ASP.NET (C#). Systems Programming: C/C++."
+                    },
+                    { 
+                        title: "Testing & Quality Assurance", 
+                        details: "Unit testing: JUnit (Java), NUnit (C#), PyTest (Python), Jest (JS). Integration & system testing. Test-driven development (TDD)."
+                    }
+                ]
+            }
+        ];
+
+        // Update functions
+        function setActiveTab(tab) {
+            state.activeTab = tab;
+            render();
+        }
+
+        function toggleSection(id) {
+            if (state.expandedSections.has(id)) {
+                state.expandedSections.delete(id);
+            } else {
+                state.expandedSections.add(id);
+            }
+            render();
+        }
+
+        // Render functions
+        function render() {
+            // Update current time
+            state.currentTime = new Date();
+            const app = document.getElementById('app');
+            app.innerHTML = `
+                ${renderHeader()}
+                <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    ${renderContent()}
+                </main>
+                ${renderFooter()}
+            `;
+            
+            // Start time update interval
+            if (!document.getElementById('timeInterval')) {
+                const timeInterval = document.createElement('div');
+                timeInterval.id = 'timeInterval';
+                document.body.appendChild(timeInterval);
+                setInterval(render, 1000);
+            }
+            
+            // Add event listeners
+            addEventListeners();
+        }
+
+        function renderHeader() {
+            return `
+                <header class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-lg shadow-lg sticky top-0 z-50 border-b border-slate-200 dark:border-slate-700">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div class="flex justify-between items-center py-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg floating">
+                                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h1 class="text-2xl font-bold gradient-text">
+                                        Programming Roadmap
+                                    </h1>
+                                    <p class="text-sm text-slate-600 dark:text-slate-400">Your journey to becoming a master programmer</p>
+                                </div>
+                            </div>
+                            <div class="text-sm text-slate-500 dark:text-slate-400 font-mono">
+                                <div class="flex items-center space-x-2">
+                                    <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <span>${state.currentTime.toLocaleTimeString()}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <nav class="flex space-x-8 border-t dark:border-slate-700 pt-2">
+                            ${['home', 'roadmap'].map(tab => {
+                                const labels = { home: 'Home', roadmap: 'Roadmap' };
+                                const icons = { home: '🏠', roadmap: '🎯' };
+                                return `
+                                    <button onclick="setActiveTab('${tab}')" class="py-3 px-1 border-b-2 font-medium text-sm transition-all duration-200 ${state.activeTab === tab ? 'border-indigo-500 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400' : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300 hover:border-slate-300'}">
+                                        <span class="mr-2">${icons[tab]}</span>
+                                        ${labels[tab]}
+                                    </button>
+                                `;
+                            }).join('')}
+                        </nav>
+                    </div>
+                </header>
+            `;
+        }
+
+        function renderContent() {
+            switch (state.activeTab) {
+                case 'home':
+                    return renderHome();
+                case 'roadmap':
+                    return renderRoadmap();
+                default:
+                    return renderHome();
+            }
+        }
+
+        function renderHome() {
+            return `
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl md:text-5xl font-bold mb-6 gradient-text">
+                        Welcome to the Programming Roadmap
+                    </h2>
+                    <p class="text-xl text-slate-600 dark:text-slate-300 mb-8 max-w-4xl mx-auto leading-relaxed">
+                        A comprehensive journey from beginner to expert programmer across multiple languages and paradigms.
+                        Master the art of coding with our structured learning path.
+                    </p>
+                    <div class="grid gap-6 md:grid-cols-3 mb-12">
+                        <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl shadow-xl p-8 card-hover border border-slate-200 dark:border-slate-700">
+                            <div class="text-4xl mb-4 text-center">📚</div>
+                            <h3 class="text-xl font-semibold mb-3 text-indigo-600 dark:text-indigo-400">Structured Learning</h3>
+                            <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                Follow a carefully designed curriculum that takes you from programming basics to advanced concepts.
+                            </p>
+                        </div>
+                        <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl shadow-xl p-8 card-hover border border-slate-200 dark:border-slate-700">
+                            <div class="text-4xl mb-4 text-center">🌐</div>
+                            <h3 class="text-xl font-semibold mb-3 text-purple-600 dark:text-purple-400">Multi-Language</h3>
+                            <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                Learn the most in-demand programming languages including Python, JavaScript, Java, C++, C# and more.
+                            </p>
+                        </div>
+                        <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl shadow-xl p-8 card-hover border border-slate-200 dark:border-slate-700">
+                            <div class="text-4xl mb-4 text-center">🚀</div>
+                            <h3 class="text-xl font-semibold mb-3 text-pink-600 dark:text-pink-400">Career Ready</h3>
+                            <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                Gain the skills needed to succeed in the tech industry, from coding fundamentals to advanced architecture.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-2xl shadow-2xl p-8 md:p-12 text-white">
+                        <div class="max-w-4xl mx-auto text-center">
+                            <h3 class="text-2xl md:text-3xl font-bold mb-4">Ready to Start Your Coding Journey?</h3>
+                            <p class="text-indigo-100 text-lg mb-6">
+                                Begin your path to becoming a professional programmer today. 
+                                Click on Roadmap to see the complete learning path!
+                            </p>
+                            <button onclick="setActiveTab('roadmap')" class="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-8 py-4 rounded-xl font-semibold transition-all duration-200 text-lg transform hover:scale-105 inline-flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                </svg>
+                                Explore the Roadmap
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderRoadmap() {
+            return `
+                <div>
+                    <div class="text-center mb-12">
+                        <h2 class="text-4xl font-bold gradient-text mb-4">Programming Roadmap</h2>
+                        <p class="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto">
+                            A comprehensive journey from beginner to expert programmer across multiple languages and paradigms
+                        </p>
+                    </div>
+                    <div class="roadmap grid gap-6" id="roadmap-container">
+                        ${roadmapData.map(section => `
+                            <div class="section bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 card-hover overflow-hidden" data-id="${section.id}">
+                                <div class="section-header flex items-center justify-between p-6 cursor-pointer border-b border-slate-200 dark:border-slate-700" onclick="toggleSection(${section.id})">
+                                    <div class="flex items-center">
+                                        <i data-lucide="${section.icon}" class="w-6 h-6 text-indigo-600 dark:text-indigo-400 mr-4"></i>
+                                        <h2 class="section-title text-xl font-semibold text-slate-800 dark:text-white">${section.title}</h2>
+                                    </div>
+                                    <i data-lucide="${state.expandedSections.has(section.id) ? 'chevron-up' : 'chevron-down'}" class="w-5 h-5 text-slate-500 dark:text-slate-400 section-toggle"></i>
+                                </div>
+                                <div class="topics" style="max-height: ${state.expandedSections.has(section.id) ? '2000px' : '0'}; overflow: hidden; transition: max-height 0.5s ease;">
+                                    <div class="topic-list p-6 pt-4 space-y-4">
+                                        ${section.topics.map(topic => `
+                                            <div class="topic bg-slate-50/70 dark:bg-slate-700/50 rounded-xl p-4 border border-slate-200 dark:border-slate-600 transition-colors">
+                                                <div class="topic-title flex items-start gap-3 text-slate-800 dark:text-white font-medium">
+                                                    <i data-lucide="dot" class="w-5 h-5 text-indigo-500 mt-1 flex-shrink-0"></i>
+                                                    <span>${topic.title}</span>
+                                                </div>
+                                                <div class="topic-details text-slate-600 dark:text-slate-400 text-sm mt-2 leading-relaxed">${topic.details}</div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderFooter() {
+            return `
+                <footer class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-lg shadow-inner mt-20 border-t border-slate-200 dark:border-slate-700">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                        <div class="grid gap-8 md:grid-cols-3">
+                            <div class="text-center md:text-left">
+                                <div class="flex items-center justify-center md:justify-start gap-3 mb-4">
+                                    <div class="w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center">
+                                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                        </svg>
+                                    </div>
+                                    <span class="text-xl font-bold gradient-text">Programming Roadmap</span>
+                                </div>
+                                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                    Your comprehensive guide to mastering programming from beginner to expert level.
+                                </p>
+                            </div>
+                            <div class="text-center">
+                                <h4 class="font-semibold mb-4 text-slate-800 dark:text-white">Programming Languages</h4>
+                                <div class="flex flex-wrap justify-center gap-2">
+                                    <span class="bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full text-sm">Python</span>
+                                    <span class="bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full text-sm">JavaScript</span>
+                                    <span class="bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full text-sm">Java</span>
+                                    <span class="bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full text-sm">C++</span>
+                                    <span class="bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full text-sm">C#</span>
+                                    <span class="bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full text-sm">C</span>
+                                </div>
+                            </div>
+                            <div class="text-center md:text-right">
+                                <h4 class="font-semibold mb-4 text-slate-800 dark:text-white">Quick Links</h4>
+                                <div class="space-y-2">
+                                    <a href="#" onclick="setActiveTab('home')" class="block text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400">Home</a>
+                                    <a href="#" onclick="setActiveTab('roadmap')" class="block text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400">Roadmap</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="border-t border-slate-200 dark:border-slate-700 mt-8 pt-8 text-center">
+                            <p class="text-slate-500 dark:text-slate-400 text-sm">
+                                © 2024 Programming Roadmap. All rights reserved. | Designed for aspiring developers worldwide
+                            </p>
+                        </div>
+                    </div>
+                </footer>
+            `;
+        }
+
+        function addEventListeners() {
+            // Add smooth scrolling for navigation
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add lucide icons script
+            const script = document.createElement('script');
+            script.src = 'https://unpkg.com/lucide@latest';
+            script.onload = function() {
+                render();
+                // Initialize icons
+                lucide.createIcons();
+            };
+            document.head.appendChild(script);
+        });
+    </script>
+</body>
+</html>
